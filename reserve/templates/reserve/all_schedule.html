@@ -1,0 +1,27 @@
+{% extends 'reserve/base.html' %}
+
+{% load my_templatetags %}
+
+{% block content %}
+    <h1>予約一覧</h1>
+    <p>{{ start_date }} - {{ end_date }}</p>
+    <table style="table-layout: fixed;width: 100%" border="1">
+        <tr>
+            <th>席</th>
+            {% for day in days %}
+                <th>{{ day | date:"d(D)" }}</th>
+            {% endfor %}
+        </tr>
+        {% for seat in seats %}
+        <tr>
+            <th>席{{ seat.name }}</th>
+            {% for day in days %}
+                <td>
+                    <a href="{% url 'reserve:do_reserve' seat.pk day.year day.month day.day %}">{% access_dict calendar seat.id day %}</a>
+                </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

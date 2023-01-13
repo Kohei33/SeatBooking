@@ -1,0 +1,10 @@
+{% extends 'reserve/base.html' %}
+
+{% block content %}
+    <h1>予約</h1>
+    <p>席{{ seat.name }} {{ year }}/{{ month }}/{{ day }}</p>
+    <form action="" method="POST">
+        {% csrf_token %}
+        <button type="submit">送信</button>
+    </form>
+{% endblock %}

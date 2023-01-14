@@ -1,7 +1,5 @@
 {% extends 'reserve/base.html' %}
 
-{% load my_templatetags %}
-
 {% block content %}
     <h1>予約一覧</h1>
     <p>{{ start_date }} - {{ end_date }}</p>
@@ -12,12 +10,16 @@
                 <th>{{ day | date:"d(D)" }}</th>
             {% endfor %}
         </tr>
-        {% for seat in seats %}
+        {% for seat, days_if_enable in seats_days %}<!--外側のリストの分試行を回す-->
         <tr>
             <th>席{{ seat.name }}</th>
-            {% for day in days %}
+            {% for day_if_enable in days_if_enable %}<!--内側のリストの分試行を回す-->
                 <td>
-                    <a href="{% url 'reserve:do_reserve' seat.pk day.year day.month day.day %}">{% access_dict calendar seat.id day %}</a>
+                    {% if day_if_enable.1 %}<!--予約可の場合-->
+                        <a href="{% url 'reserve:do_reserve' seat.pk day_if_enable.0.year day_if_enable.0.month day_if_enable.0.day %}">○</a>
+                    {% else %}
+                        ×
+                    {% endif %}
                 </td>
             {% endfor %}
         </tr>

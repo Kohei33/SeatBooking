@@ -18,23 +18,20 @@ class AllSchedule(generic.ListView):
         start_date = today
         end_date = days[-1]
 
-        calendar = {}
-        for i, seat in enumerate(seats):
-            calendar = calendar | {seat.id: {}}
+        seats_days = [] #席・リストBのタプルを持つリストA
+        for seat in seats:
+            days_if_enable = [] #日付・予約可否のタプルを持つリストB
             for day in days:
-                if Schedule.objects.filter(seat=seat, date=day).exists():
-                    print("999")
-                    calendar[seat.id][day] = False
-                else:
-                    calendar[seat.id][day] = True
-        print(days)
+                if_enable = not Schedule.objects.filter(seat=seat, date=day).exists() #予約可否を取得
+                days_if_enable.append((day, if_enable)) #リストBに値をセット
+            seats_days.append((seat, days_if_enable)) #リストAに値をセット
 
         context["seats"] = seats
         context["seat"] = seat
         context["days"] = days
         context["start_date"] = start_date
         context["end_date"] = end_date
-        context["calendar"] = calendar
+        context["seats_days"] = seats_days
         return context
 
 class DoReserve(generic.CreateView):

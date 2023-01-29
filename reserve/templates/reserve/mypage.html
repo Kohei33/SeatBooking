@@ -1,0 +1,13 @@
+{% extends 'reserve/base.html' %}
+
+{% block content %}
+    <h1>マイページ</h1>
+    <h2>予約</h2>
+    <ul>
+        {% for schedule in schedule_list %}
+            <li>{{ schedule }}</li>
+        {% empty %}
+            <li>予約はありません。</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

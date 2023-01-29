@@ -18,7 +18,7 @@
                     {% if day_if_enable.1 %}<!--予約可の場合-->
                         <a href="{% url 'reserve:do_reserve' seat.pk day_if_enable.0.year day_if_enable.0.month day_if_enable.0.day %}">○</a>
                     {% else %}
-                        ×
+                        {{ day_if_enable.2 }}
                     {% endif %}
                 </td>
             {% endfor %}

@@ -24,7 +24,10 @@ class AllSchedule(generic.ListView):
             days_if_enable = [] #日付・予約可否のタプルを持つリストB
             for day in days:
                 if_enable = not Schedule.objects.filter(seat=seat, date=day).exists() #予約可否を取得
-                days_if_enable.append((day, if_enable)) #リストBに値をセット
+                if not if_enable:
+                    reserve_user = Schedule.objects.get(seat=seat, date=day).user #すでに予約が入っている場合、予約者を取得
+                print(reserve_user)
+                days_if_enable.append((day, if_enable, reserve_user)) #リストBに値をセット
             seats_days.append((seat, days_if_enable)) #リストAに値をセット
         
         context["seats"] = seats
@@ -58,5 +61,13 @@ class DoReserve(LoginRequiredMixin, generic.CreateView):
             if Schedule.objects.filter(seat=seat, date=date).exists():
                 messages.error(self.request, '入れ違いで予約がありました。')
             else:
-                Schedule.objects.create(seat=seat, date=date)
+                Schedule.objects.create(seat=seat, date=date, user=self.request.user)
             return redirect('reserve:all_schedule')
+
+class MyPage(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'reserve/mypage.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['schedule_list'] = Schedule.objects.filter(user=self.request.user).order_by('user')
+        return context

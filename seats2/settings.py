@@ -12,6 +12,12 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 
+LOGIN_URL = 'reserve:login'
+
+LOGIN_REDIRECT_URL = 'reserve:all_schedule'
+
+LOGOUT_REDIRECT_URL = 'reserve:all_schedule'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 

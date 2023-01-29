@@ -14,7 +14,7 @@
         <tr>
             <th>席{{ seat.name }}</th>
             {% for day_if_enable in days_if_enable %}<!--内側のリストの分試行を回す-->
-                <td>
+                <td align="center">
                     {% if day_if_enable.1 %}<!--予約可の場合-->
                         <a href="{% url 'reserve:do_reserve' seat.pk day_if_enable.0.year day_if_enable.0.month day_if_enable.0.day %}">○</a>
                     {% else %}

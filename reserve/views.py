@@ -5,6 +5,7 @@ from .models import Seat, Schedule
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.http import HttpResponse
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class AllSchedule(generic.ListView):
     template_name = 'reserve/all_schedule.html'
@@ -25,7 +26,7 @@ class AllSchedule(generic.ListView):
                 if_enable = not Schedule.objects.filter(seat=seat, date=day).exists() #予約可否を取得
                 days_if_enable.append((day, if_enable)) #リストBに値をセット
             seats_days.append((seat, days_if_enable)) #リストAに値をセット
-
+        
         context["seats"] = seats
         context["seat"] = seat
         context["days"] = days
@@ -34,13 +35,12 @@ class AllSchedule(generic.ListView):
         context["seats_days"] = seats_days
         return context
 
-class DoReserve(generic.CreateView):
+class DoReserve(LoginRequiredMixin, generic.CreateView):
     template_name = 'reserve/do_reserve.html'
     model = Schedule
     fields = ()
     
     def get_context_data(self, **kwargs):
-        #print(self.request.method + "1")
         context = super().get_context_data(**kwargs)
         date = datetime.date(year=self.kwargs['year'], month=self.kwargs['month'], day=self.kwargs['day'])
         seat = get_object_or_404(Seat, pk=self.kwargs['pk'])
@@ -59,5 +59,4 @@ class DoReserve(generic.CreateView):
                 messages.error(self.request, '入れ違いで予約がありました。')
             else:
                 Schedule.objects.create(seat=seat, date=date)
-                #print(self.request.method + "2")
             return redirect('reserve:all_schedule')
